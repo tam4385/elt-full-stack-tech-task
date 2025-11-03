@@ -1,4 +1,4 @@
-import { IsDateString, IsOptional, IsString, Validate } from 'class-validator';
+import { IsDateString, IsOptional, IsString, MaxLength, MinLength, Validate } from 'class-validator';
 import { IsStartBeforeEnd } from './calendar.validators';
 
 /**
@@ -20,5 +20,7 @@ export class EventDto {
 
   @IsOptional()
   @IsString({ message: 'name must be a string' })
+  @MinLength(3, { message: 'name must be at least 3 characters long' })
+  @MaxLength(255, { message: 'name must be less than 255 characters long' })
   name?: string;
 }

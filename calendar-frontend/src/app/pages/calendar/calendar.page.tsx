@@ -1,6 +1,6 @@
 import { CalendarView } from './components/calendar-view/calendar-view';
 import { CalendarToolbar } from './components/calendar-toolbar/calendar-toolbar';
-import { AddEventDialog } from './components/calendar-event-modal/calendar-event-modal';
+import { EventModal } from './components/calendar-event-modal/calendar-event-modal';
 import { useCalendar } from './hooks/use-calendar';
 
 export const CalendarPage = () => {
@@ -34,7 +34,7 @@ export const CalendarPage = () => {
         selectedEvent={selectedEvent}
         setSelectedEvent={setSelectedEvent}
       />
-      <AddEventDialog
+      <EventModal
         open={eventModalOpen}
         event={selectedEvent}
         onSave={addEvent}

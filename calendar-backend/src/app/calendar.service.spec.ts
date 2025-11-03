@@ -1,6 +1,6 @@
 import { CalendarService } from './calendar.service';
 import { CalendarEventRepository } from '@fs-tech-test/calendar-domain';
-import { mockCalendarEventEntity } from '../mocks/events.mock';
+import { mockCalendarEventEntity2, mockCalendarEventEntity } from '../mocks/events.mock';
 import { BadRequestException } from '@nestjs/common';
 
 describe('CalendarService', () => {
@@ -29,12 +29,16 @@ describe('CalendarService', () => {
 
   describe('createEvent', () => {
     it('should create a new event', async () => {
+      jest
+        .spyOn(calendarEventRepository, 'findForRange')
+        .mockResolvedValue([]);
+
       const createNewEvent = jest
         .spyOn(calendarEventRepository, 'createNewEvent')
-        .mockResolvedValue(mockCalendarEventEntity);
+        .mockResolvedValue(mockCalendarEventEntity2);
 
-      const start = '2024-10-09T15:00:00';
-      const end = '2024-10-09T17:00:00';
+      const start = '2024-10-10T16:00:00';
+      const end = '2024-10-10T18:00:00';
       await service.addEvent({ name: 'Mock event #1', start, end });
 
       expect(createNewEvent).toHaveBeenCalledWith(
@@ -45,10 +49,19 @@ describe('CalendarService', () => {
     });
 
     it('should throw an error if start date is after end date', async () => {
-      const start = '2024-10-09T17:00:00';
-      const end = '2024-10-09T15:00:00';
-      const result = await service.addEvent({ name: 'Mock event #1', start, end })
-      expect(result).rejects;
+      jest
+        .spyOn(calendarEventRepository, 'findForRange')
+        .mockResolvedValue([]);
+      
+      jest
+        .spyOn(calendarEventRepository, 'createNewEvent')
+        .mockRejectedValue(new BadRequestException('Start date must be before end date'));
+
+      const start = '2024-10-09T18:00:00';
+      const end = '2024-10-09T16:00:00';
+      await expect(
+        service.addEvent({ name: 'Mock event #1', start, end })
+      ).rejects.toBeInstanceOf(BadRequestException);
     });
   });
 
@@ -61,6 +74,35 @@ describe('CalendarService', () => {
       await service.deleteEvent(111);
 
       expect(deleteById).toHaveBeenCalledWith(111);
+    });
+  });
+
+  describe('patchEvent', () => {
+    it('should patch an event', async () => {
+      jest
+        .spyOn(calendarEventRepository, 'findForRange')
+        .mockResolvedValue([]);
+
+      const patchEvent = jest
+        .spyOn(calendarEventRepository, 'patchEvent')
+        .mockResolvedValue(mockCalendarEventEntity);
+
+      await service.patchEvent(111, { name: 'Mock event #1', start: '2024-10-11T15:00:00', end: '2024-10-11T17:00:00' });
+      expect(patchEvent).toHaveBeenCalledWith(111, { name: 'Mock event #1', start: '2024-10-11T15:00:00', end: '2024-10-11T17:00:00' });
+    });
+
+    it('should throw 400 error if conflicting events are found', async () => {
+      jest
+        .spyOn(calendarEventRepository, 'findForRange')
+        .mockResolvedValue([mockCalendarEventEntity]);
+
+      await expect(
+        service.patchEvent(111, {
+          name: 'Mock event #1',
+          start: '2024-10-11T15:00:00',
+          end: '2024-10-11T17:00:00',
+        })
+      ).rejects.toBeInstanceOf(BadRequestException);
     });
   });
 });

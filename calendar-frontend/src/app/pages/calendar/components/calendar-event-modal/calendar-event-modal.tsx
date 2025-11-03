@@ -1,12 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import * as Dialog from '@radix-ui/react-dialog';
-import { EventInteractionArgs } from 'react-big-calendar/lib/addons/dragAndDrop';
 import { useState, useEffect } from 'react';
 import { EltEvent } from '../../../../common/types';
 import { overlay, content, heading, desc, label, input, row, btn, primary, closeX } from './styles/calendar-modal-style';
 import { toLocalInput } from '../../calendar.utils';
 
-export function AddEventDialog({
+export function EventModal({
   open,
   onOpenChange,
   event,
@@ -17,7 +16,7 @@ export function AddEventDialog({
   event: EltEvent | undefined;
   onSave: (event: Omit<EltEvent, 'id'>) => Promise<void>;
   patchEvent: (
-    event: EventInteractionArgs<EltEvent>,
+    event: EltEvent,
   ) => Promise<void>;
   onOpenChange: (state: boolean) => void;
 }) {
@@ -90,6 +89,7 @@ export function AddEventDialog({
             </Dialog.Close>
             <button
               css={primary}
+              data-testid="save-event-btn"
               disabled={!canSave}
               onClick={() => {
                 if (event?.id) {

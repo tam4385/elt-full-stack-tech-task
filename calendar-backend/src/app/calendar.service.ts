@@ -18,6 +18,12 @@ export class CalendarService {
   }
 
   async addEvent(payload: EventDto) {
+    const conflictingEvents = await this.checkForConflictingEvents(payload.start, payload.end);
+    
+    if (conflictingEvents.length > 0) {
+      throw new BadRequestException('Conflicting events found');
+    }
+
     const newEntity = await this.calendarEventRepository.createNewEvent(
       payload.name,
       new Date(payload.start),
@@ -28,10 +34,26 @@ export class CalendarService {
   }
 
   async patchEvent(id: number, payload: EventDto) {
+    const conflictingEvents = await this.checkForConflictingEvents(payload.start, payload.end)
+    const filteredConflictingEvents = conflictingEvents.filter(event => event.id !== id);
+    
+    if (filteredConflictingEvents.length > 0) {
+      throw new BadRequestException('Conflicting events found');
+    }
+
     return await this.calendarEventRepository.patchEvent(id, payload);
   }
 
   async deleteEvent(id: number) {
     await this.calendarEventRepository.deleteById(id);
+  }
+
+  async checkForConflictingEvents(start: string, end: string) {
+    const conflictingEvents = await this.calendarEventRepository.findForRange(
+      new Date(start),
+      new Date(end),
+    );
+
+    return conflictingEvents;
   }
 }

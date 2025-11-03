@@ -12,10 +12,10 @@ export function IsStartBeforeEnd(validationOptions?: ValidationOptions) {
       propertyName: propertyName,
       options: validationOptions,
       validator: {
-        validate(_: any, args: ValidationArguments) {
-          const obj = args.object as any;
+        validate(_: unknown, args: ValidationArguments) {
+          const obj = args.object as { start: string; end: string };
           if (!obj.start || !obj.end) {
-            return true;   // skip if missing
+            return true;
           }
           const start = new Date(obj.start).getTime();
           const end   = new Date(obj.end).getTime();

@@ -18,7 +18,7 @@ export class CalendarEventRepository extends EntityRepository<CalendarEventEntit
     // By default, mikro-orm uses Knex query syntax but you can use raw queries like this if it's easier:
     // const rawResult = await this.em.getKnex().raw<CalendarEventEntity[][]>('select * from elt_event where start <= ? AND end >= ?', [end, start])
     // return rawResult[0];
-    return this.find({ start: { $lte: end }, end: { $gte: start } });
+    return this.find({ start: { $lt: end }, end: { $gt: start } });
   }
 
   async createNewEvent(
