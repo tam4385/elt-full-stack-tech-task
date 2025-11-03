@@ -17,7 +17,7 @@ export function AddEventDialog({
   event: EltEvent | undefined;
   onSave: (event: Omit<EltEvent, 'id'>) => Promise<void>;
   patchEvent: (
-    event: EventInteractionArgs<EltEvent & { name: string }>,
+    event: EventInteractionArgs<EltEvent>,
   ) => Promise<void>;
   onOpenChange: (state: boolean) => void;
 }) {
@@ -93,7 +93,7 @@ export function AddEventDialog({
               disabled={!canSave}
               onClick={() => {
                 if (event?.id) {
-                  patchEvent({ event, start, end, name: title.trim() });
+                  patchEvent({ id: event.id, start, end, title: title.trim() });
                 } else {
                   onSave({ title: title.trim(), start, end });
                 }

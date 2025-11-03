@@ -37,11 +37,8 @@ export const CalendarView = ({
 }: ICalendarViewProps) => {
   const { components } = useCalendarView(showIds);
 
-  const onEventDrop = (data: EventInteractionArgs<EltEvent>): void =>
-    patchEvent(data);
-
-  const onEventResize = (data: EventInteractionArgs<EltEvent>): void =>
-    patchEvent(data);
+  const onEventDrop = (data: EventInteractionArgs<EltEvent>): void => patchEvent(data);
+  const onEventResize = (data: EventInteractionArgs<EltEvent>): void => patchEvent(data);
 
   return (
     <DnDCalendar

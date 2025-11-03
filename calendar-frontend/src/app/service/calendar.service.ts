@@ -35,14 +35,14 @@ export class CalendarService extends ApiService {
     id: number,
     start: Moment,
     end: Moment,
-    name?: string,
+    title?: string,
   ): Promise<AxiosResponse<{ message: string; id: number }>> {
     const body: PatchBody = {
       start: start.toISOString(),
       end: end.toISOString(),
     };
 
-    if (name) body.name = name;
+    if (title) body.name = title;
 
     return this._axios.patch(`api/calendar/patch-event/${id}`, {
       ...body,

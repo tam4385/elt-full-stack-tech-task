@@ -5,10 +5,6 @@ import { EltEvent } from '../../../common/types';
 import { CalendarService } from '../../../service/calendar.service';
 import { EventInteractionArgs } from 'react-big-calendar/lib/addons/dragAndDrop';
 
-type PatchArgsWithName = EventInteractionArgs<EltEvent>;
-type PatchArgsDatesOnly = EventInteractionArgs<EltEvent>;
-type PatchEventArgs = PatchArgsDatesOnly | PatchArgsWithName;
-
 export const useCalendar = () => {
   const calendarService = new CalendarService();
   const [events, setEvents] = useState<EltEvent[]>([]);
@@ -52,9 +48,9 @@ export const useCalendar = () => {
     setEvents((events) => [...events, { ...event, id }]);
   };
 
-  const patchEventDatesOnly = async (data: PatchArgsDatesOnly): Promise<void> => {
-    const { event, start, end } = data;
-    const id = Number(event.id);
+  const patchEventDatesOnly = async (data: EventInteractionArgs<EltEvent>): Promise<void> => {
+    const { start, end } = data;
+    const { id } = data.event as EltEvent;
     const prevState = events;
 
     setEvents(curr =>
@@ -71,29 +67,28 @@ export const useCalendar = () => {
     }
   };
 
-  const patchEventWithName = async (data: PatchArgsWithName): Promise<void> => {
-    const { event, start, end, name } = data;
-    const id = Number(event.id);
+  const patchEventWithName = async (data: EltEvent): Promise<void> => {
+    const { id, start, end, title } = data;
     const prevState = events;
     setEvents(curr =>
       curr.map(ev =>
-        Number(ev.id) === id ? { ...ev, start, end, title: name } : ev
+        Number(ev.id) === id ? { ...ev, start, end, title } : ev
       )
     );
 
     try {
-      await calendarService.patchEvent(id, moment(start), moment(end), name);
+      await calendarService.patchEvent(id, moment(start), moment(end), title);
     } catch (err) {
       setEvents(prevState);
       // handle error feedback
     }
   };
 
-  const patchEvent = async (data: PatchEventArgs): Promise<void> => {
-    if (data.name) {
-      return patchEventWithName(data);
+  const patchEvent = async (data: EltEvent | EventInteractionArgs<EltEvent>): Promise<void> => {
+    if ('title' in data && 'id' in data) {
+      return patchEventWithName(data as EltEvent);
     } else {
-      return patchEventDatesOnly(data);
+      return patchEventDatesOnly(data as EventInteractionArgs<EltEvent>);
     }
   };
 
