@@ -6,8 +6,9 @@ import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 
 describe('CalendarToolbarComponent', () => {
-  let addEvent: (event: Omit<EltEvent, 'id'>) => Promise<void>;
   let setShowIds: Dispatch<boolean>;
+  let setEventModalOpen: Dispatch<boolean>;
+  let setSelectedEvent: Dispatch<EltEvent | undefined>;
   const mockEvent: EltEvent = {
     id: 100,
     title: 'Mock event',
@@ -16,14 +17,16 @@ describe('CalendarToolbarComponent', () => {
   };
 
   beforeEach(() => {
-    addEvent = jest.fn();
     setShowIds = jest.fn();
+    setEventModalOpen = jest.fn();
+    setSelectedEvent = jest.fn();
   });
 
   it('renders correctly', () => {
     const { container } = render(
       <CalendarToolbar
-        addEvent={addEvent}
+        setSelectedEvent={() => setSelectedEvent(undefined)}
+        setEventModalOpen={() => setEventModalOpen(true)}
         showIds={false}
         setShowIds={setShowIds}
       />,
@@ -33,10 +36,11 @@ describe('CalendarToolbarComponent', () => {
   });
 
   describe('Add event button', () => {
-    it('should add a random event', async () => {
+    it('should open the event modal', async () => {
       render(
         <CalendarToolbar
-          addEvent={addEvent}
+          setSelectedEvent={() => setSelectedEvent(undefined)}
+          setEventModalOpen={() => setEventModalOpen(true)}
           showIds={false}
           setShowIds={setShowIds}
         />,
@@ -45,19 +49,17 @@ describe('CalendarToolbarComponent', () => {
       const btn = screen.getByTestId('add-event-btn');
       userEvent.click(btn);
 
-      expect(addEvent).toHaveBeenCalledWith({
-        start: expect.any(Date),
-        end: expect.any(Date),
-        title: expect.stringMatching(/Random event \d+/),
+      expect(setEventModalOpen).toHaveBeenCalledWith(true);
       });
-    });
   });
 
   describe('Edit event button', () => {
     it('should only be disabled if there is no selected event', async () => {
       render(
         <CalendarToolbar
-          addEvent={addEvent}
+          selectedEvent={undefined}
+          setEventModalOpen={() => setEventModalOpen(true)}
+          setSelectedEvent={() => setSelectedEvent(undefined)}
           showIds={false}
           setShowIds={setShowIds}
         />,
@@ -70,10 +72,11 @@ describe('CalendarToolbarComponent', () => {
     it('should only be disabled if there is a selected event', async () => {
       render(
         <CalendarToolbar
-          addEvent={addEvent}
+          selectedEvent={mockEvent}
+          setSelectedEvent={() => setSelectedEvent(undefined)}
+          setEventModalOpen={() => setEventModalOpen(true)}
           showIds={false}
           setShowIds={setShowIds}
-          selectedEvent={mockEvent}
         />,
       );
 
@@ -86,7 +89,9 @@ describe('CalendarToolbarComponent', () => {
     it('should toggle ids being shown', () => {
       render(
         <CalendarToolbar
-          addEvent={addEvent}
+          selectedEvent={mockEvent}
+          setSelectedEvent={() => setSelectedEvent(undefined)}
+          setEventModalOpen={() => setEventModalOpen(true)}
           showIds={false}
           setShowIds={setShowIds}
         />,

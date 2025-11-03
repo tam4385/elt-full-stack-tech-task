@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CalendarEventRepository } from '@fs-tech-test/calendar-domain';
+import { EventDto } from './calendar.dto';
 
 @Injectable()
 export class CalendarService {
@@ -16,7 +17,7 @@ export class CalendarService {
     );
   }
 
-  async addEvent(payload: EventPayload) {
+  async addEvent(payload: EventDto) {
     const newEntity = await this.calendarEventRepository.createNewEvent(
       payload.name,
       new Date(payload.start),
@@ -24,6 +25,10 @@ export class CalendarService {
     );
 
     return newEntity.id;
+  }
+
+  async patchEvent(id: number, payload: EventDto) {
+    return await this.calendarEventRepository.patchEvent(id, payload);
   }
 
   async deleteEvent(id: number) {

@@ -5,11 +5,13 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
 
 import { CalendarService } from './calendar.service';
+import { EventDto } from './calendar.dto';
 
 @Controller('calendar')
 export class CalendarController {
@@ -21,7 +23,7 @@ export class CalendarController {
   }
 
   @Post('create-event')
-  async createEvent(@Body() payload: EventPayload) {
+  async createEvent(@Body() payload: EventDto) {
     const id = await this.calendarService.addEvent(payload);
     return { message: 'Event created', id };
   }
@@ -30,5 +32,14 @@ export class CalendarController {
   async deleteEvent(@Param('id', new ParseIntPipe()) id: number) {
     await this.calendarService.deleteEvent(id);
     return { message: 'Event deleted', id };
+  }
+
+  @Patch('patch-event/:id')
+  async patchEvent(
+    @Param('id', new ParseIntPipe()) id: number,
+    @Body() payload: EventDto,
+  ) {
+    await this.calendarService.patchEvent(id, payload);
+    return { message: 'Event patched' };
   }
 }

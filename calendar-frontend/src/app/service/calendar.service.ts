@@ -3,6 +3,12 @@ import { AxiosResponse } from 'axios';
 import { Moment } from 'moment';
 import { ICalendarEvent } from './types';
 
+interface PatchBody {
+  start: string;
+  end: string;
+  name?: string;
+}
+
 export class CalendarService extends ApiService {
   async getEventsForRange(
     start: Moment,
@@ -22,6 +28,24 @@ export class CalendarService extends ApiService {
       name,
       start: start.toISOString(),
       end: end.toISOString(),
+    });
+  }
+
+  async patchEvent(
+    id: number,
+    start: Moment,
+    end: Moment,
+    name?: string,
+  ): Promise<AxiosResponse<{ message: string; id: number }>> {
+    const body: PatchBody = {
+      start: start.toISOString(),
+      end: end.toISOString(),
+    };
+
+    if (name) body.name = name;
+
+    return this._axios.patch(`api/calendar/patch-event/${id}`, {
+      ...body,
     });
   }
 }

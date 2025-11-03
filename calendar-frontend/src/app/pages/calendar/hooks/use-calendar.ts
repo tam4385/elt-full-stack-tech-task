@@ -3,12 +3,18 @@ import moment, { unitOfTime, Moment } from 'moment/moment';
 import { View } from 'react-big-calendar';
 import { EltEvent } from '../../../common/types';
 import { CalendarService } from '../../../service/calendar.service';
+import { EventInteractionArgs } from 'react-big-calendar/lib/addons/dragAndDrop';
+
+type PatchArgsWithName = EventInteractionArgs<EltEvent>;
+type PatchArgsDatesOnly = EventInteractionArgs<EltEvent>;
+type PatchEventArgs = PatchArgsDatesOnly | PatchArgsWithName;
 
 export const useCalendar = () => {
   const calendarService = new CalendarService();
   const [events, setEvents] = useState<EltEvent[]>([]);
   const [showIds, setShowIds] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EltEvent | undefined>();
+  const [eventModalOpen, setEventModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const today = moment();
@@ -30,7 +36,7 @@ export const useCalendar = () => {
     const newMutableDate = moment(newDate);
     const unitOfTime = viewToUnitOfTime(view);
     await fetchEvents(
-      newMutableDate.startOf(unitOfTime),
+      newMutableDate.clone().startOf(unitOfTime),
       newMutableDate.clone().endOf(unitOfTime),
     );
   };
@@ -44,6 +50,51 @@ export const useCalendar = () => {
       moment(event.end),
     );
     setEvents((events) => [...events, { ...event, id }]);
+  };
+
+  const patchEventDatesOnly = async (data: PatchArgsDatesOnly): Promise<void> => {
+    const { event, start, end } = data;
+    const id = Number(event.id);
+    const prevState = events;
+
+    setEvents(curr =>
+      curr.map(ev =>
+        Number(ev.id) === id ? { ...ev, start, end } : ev
+      )
+    );
+
+    try {
+      await calendarService.patchEvent(id, moment(start), moment(end));
+    } catch (err) {
+      setEvents(prevState);
+      // handle error feedback
+    }
+  };
+
+  const patchEventWithName = async (data: PatchArgsWithName): Promise<void> => {
+    const { event, start, end, name } = data;
+    const id = Number(event.id);
+    const prevState = events;
+    setEvents(curr =>
+      curr.map(ev =>
+        Number(ev.id) === id ? { ...ev, start, end, title: name } : ev
+      )
+    );
+
+    try {
+      await calendarService.patchEvent(id, moment(start), moment(end), name);
+    } catch (err) {
+      setEvents(prevState);
+      // handle error feedback
+    }
+  };
+
+  const patchEvent = async (data: PatchEventArgs): Promise<void> => {
+    if (data.name) {
+      return patchEventWithName(data);
+    } else {
+      return patchEventDatesOnly(data);
+    }
   };
 
   const viewToUnitOfTime = (view: View): unitOfTime.StartOf => {
@@ -61,11 +112,14 @@ export const useCalendar = () => {
 
   return {
     events,
+    patchEvent,
     showIds,
     setShowIds,
     onNavigate,
     addEvent,
     selectedEvent,
     setSelectedEvent,
+    eventModalOpen,
+    setEventModalOpen,
   };
 };

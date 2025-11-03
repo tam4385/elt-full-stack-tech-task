@@ -133,5 +133,54 @@ describe('CalendarEventRepository', () => {
         ).resolves.toEqual([]);
       });
     });
+
+    describe('patchEvent', () => {
+      it('should patch event dates by id without name', async () => {
+        const existingEvent = (await repository.find({}))[0];
+        expect(existingEvent).toBeDefined();
+
+        const now = new Date();
+        const newStart = new Date(now.getTime() + 24 * 60 * 60 * 1000); // +1 day
+        const newEnd = new Date(now.getTime() + 26 * 60 * 60 * 1000); // +1 day + 2 hours
+
+        await repository.patchEvent(existingEvent.id, {
+          start: newStart.toISOString(),
+          end: newEnd.toISOString(),
+        });
+
+        const patchedEvent = await repository.findOne({
+          id: existingEvent.id,
+        });
+
+        expect(patchedEvent).toBeDefined();
+        expect(patchedEvent.start.toISOString()).toBe(newStart.toISOString());
+        expect(patchedEvent.end.toISOString()).toBe(newEnd.toISOString());
+        expect(patchedEvent.name).toBe(existingEvent.name);
+      });
+
+      it('should patch event dates by id with name', async () => {
+        const existingEvent = (await repository.find({}))[0];
+        expect(existingEvent).toBeDefined();
+
+        const newName = 'new name';
+        const newStart = new Date(now.getTime() + 24 * 60 * 60 * 1000); // +1 day
+        const newEnd = new Date(now.getTime() + 26 * 60 * 60 * 1000); // +1 day + 2 hours
+
+        await repository.patchEvent(existingEvent.id, {
+          start: newStart.toISOString(),
+          end: newEnd.toISOString(),
+          name: newName,
+        });
+
+        const patchedEvent = await repository.findOne({
+          id: existingEvent.id,
+        });
+
+        expect(patchedEvent).toBeDefined();
+        expect(patchedEvent.name).toBe(newName);
+        expect(patchedEvent.start.toISOString()).toBe(newStart.toISOString());
+        expect(patchedEvent.end.toISOString()).toBe(newEnd.toISOString());
+      });
+    });
   });
 });

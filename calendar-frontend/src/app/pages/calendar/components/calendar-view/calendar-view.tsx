@@ -1,5 +1,7 @@
 import { Calendar, momentLocalizer, View } from 'react-big-calendar';
-import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
+import withDragAndDrop, {
+  EventInteractionArgs,
+} from 'react-big-calendar/lib/addons/dragAndDrop';
 import moment from 'moment';
 import './styles/calendar.scss';
 import { EltEvent } from '../../../../common/types';
@@ -19,6 +21,7 @@ const DnDCalendar = withDragAndDrop<EltEvent>(Calendar);
 interface ICalendarViewProps {
   onNavigate: (date: Date, view: View) => void;
   events: EltEvent[];
+  patchEvent: (event: EventInteractionArgs<EltEvent>) => void;
   showIds: boolean;
   selectedEvent?: EltEvent;
   setSelectedEvent: (event: EltEvent | undefined) => void;
@@ -27,14 +30,18 @@ interface ICalendarViewProps {
 export const CalendarView = ({
   onNavigate,
   events,
+  patchEvent,
   showIds,
   selectedEvent,
   setSelectedEvent,
 }: ICalendarViewProps) => {
   const { components } = useCalendarView(showIds);
 
-  const onEventDrop = () => console.log('todo');
-  const onEventResize = () => console.log('todo');
+  const onEventDrop = (data: EventInteractionArgs<EltEvent>): void =>
+    patchEvent(data);
+
+  const onEventResize = (data: EventInteractionArgs<EltEvent>): void =>
+    patchEvent(data);
 
   return (
     <DnDCalendar

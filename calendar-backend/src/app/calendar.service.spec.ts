@@ -1,6 +1,7 @@
 import { CalendarService } from './calendar.service';
 import { CalendarEventRepository } from '@fs-tech-test/calendar-domain';
 import { mockCalendarEventEntity } from '../mocks/events.mock';
+import { BadRequestException } from '@nestjs/common';
 
 describe('CalendarService', () => {
   let service: CalendarService;
@@ -41,6 +42,13 @@ describe('CalendarService', () => {
         new Date(start),
         new Date(end),
       );
+    });
+
+    it('should throw an error if start date is after end date', async () => {
+      const start = '2024-10-09T17:00:00';
+      const end = '2024-10-09T15:00:00';
+      const result = await service.addEvent({ name: 'Mock event #1', start, end })
+      expect(result).rejects;
     });
   });
 
