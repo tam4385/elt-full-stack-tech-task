@@ -4,9 +4,10 @@ import { EltEvent } from '../../../../common/types';
 import { Dispatch } from 'react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
+import { CalendarContext } from '../../calendar.context';
 
 describe('CalendarToolbarComponent', () => {
-  let setShowIds: Dispatch<boolean>;
+  let setShowIds: (next: boolean) => void;
   let setEventModalOpen: Dispatch<boolean>;
   let setSelectedEvent: Dispatch<EltEvent | undefined>;
   const mockEvent: EltEvent = {
@@ -27,8 +28,6 @@ describe('CalendarToolbarComponent', () => {
       <CalendarToolbar
         setSelectedEvent={() => setSelectedEvent(undefined)}
         setEventModalOpen={() => setEventModalOpen(true)}
-        showIds={false}
-        setShowIds={setShowIds}
       />,
     );
 
@@ -41,8 +40,6 @@ describe('CalendarToolbarComponent', () => {
         <CalendarToolbar
           setSelectedEvent={() => setSelectedEvent(undefined)}
           setEventModalOpen={() => setEventModalOpen(true)}
-          showIds={false}
-          setShowIds={setShowIds}
         />,
       );
 
@@ -60,8 +57,6 @@ describe('CalendarToolbarComponent', () => {
           selectedEvent={undefined}
           setEventModalOpen={() => setEventModalOpen(true)}
           setSelectedEvent={() => setSelectedEvent(undefined)}
-          showIds={false}
-          setShowIds={setShowIds}
         />,
       );
 
@@ -75,8 +70,6 @@ describe('CalendarToolbarComponent', () => {
           selectedEvent={mockEvent}
           setSelectedEvent={() => setSelectedEvent(undefined)}
           setEventModalOpen={() => setEventModalOpen(true)}
-          showIds={false}
-          setShowIds={setShowIds}
         />,
       );
 
@@ -88,13 +81,13 @@ describe('CalendarToolbarComponent', () => {
   describe('Show ids checkbox', () => {
     it('should toggle ids being shown', () => {
       render(
-        <CalendarToolbar
-          selectedEvent={mockEvent}
-          setSelectedEvent={() => setSelectedEvent(undefined)}
-          setEventModalOpen={() => setEventModalOpen(true)}
-          showIds={false}
-          setShowIds={setShowIds}
-        />,
+        <CalendarContext.Provider value={{ showIds: false, setShowIds }}>
+          <CalendarToolbar
+            selectedEvent={mockEvent}
+            setSelectedEvent={() => setSelectedEvent(undefined)}
+            setEventModalOpen={() => setEventModalOpen(true)}
+          />,
+        </CalendarContext.Provider>
       );
 
       const checkbox = screen.getByLabelText('Show ids');

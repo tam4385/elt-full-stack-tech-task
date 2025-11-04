@@ -1889,11 +1889,13 @@ exports[`CalendarView should render a calendar with an event 1`] = `
                   <div
                     class="rbc-event-content"
                   >
-                    <span>
-                      <strong>
+                    <div>
+                      <h4
+                        style="margin: 2px; font-weight: 500;"
+                      >
                         Mock event
-                      </strong>
-                    </span>
+                      </h4>
+                    </div>
                   </div>
                   <div
                     class="rbc-addons-dnd-resize-ns-anchor"

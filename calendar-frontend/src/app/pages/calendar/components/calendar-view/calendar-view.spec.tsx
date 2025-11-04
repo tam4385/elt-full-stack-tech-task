@@ -3,10 +3,13 @@ import { CalendarView } from './calendar-view';
 import { View } from 'react-big-calendar';
 import { EltEvent } from '../../../../common/types';
 import '@testing-library/jest-dom';
+import { EventInteractionArgs } from 'react-big-calendar/lib/addons/dragAndDrop';
+import { CalendarProvider, CalendarContext } from '../../calendar.context';
 
 describe('CalendarView', () => {
   let onNavigate: (date: Date, view: View) => void;
   let setSelectedEvent: (event: EltEvent | undefined) => void;
+  let patchEventMock: (event: EltEvent | EventInteractionArgs<EltEvent>) => void;
   const mockEvent: EltEvent = {
     id: 100,
     title: 'Mock event',
@@ -17,6 +20,7 @@ describe('CalendarView', () => {
   beforeEach(() => {
     onNavigate = jest.fn();
     setSelectedEvent = jest.fn();
+    patchEventMock = jest.fn();
     jest.useFakeTimers().setSystemTime(new Date('2024-10-11T10:30:00Z'));
   });
 
@@ -29,7 +33,7 @@ describe('CalendarView', () => {
       <CalendarView
         onNavigate={onNavigate}
         events={[]}
-        showIds={false}
+        patchEvent={patchEventMock}
         setSelectedEvent={setSelectedEvent}
       />,
     );
@@ -42,7 +46,7 @@ describe('CalendarView', () => {
       <CalendarView
         onNavigate={onNavigate}
         events={[mockEvent]}
-        showIds={false}
+        patchEvent={patchEventMock}
         setSelectedEvent={setSelectedEvent}
       />,
     );
@@ -59,12 +63,15 @@ describe('CalendarView', () => {
 
   it('should show event ids if flag is set', () => {
     render(
-      <CalendarView
-        onNavigate={onNavigate}
-        events={[mockEvent]}
-        showIds={true}
-        setSelectedEvent={setSelectedEvent}
-      />,
+      <CalendarContext.Provider value={{ showIds: true, setShowIds: jest.fn() }}>
+        <CalendarView
+          onNavigate={onNavigate}
+          events={[mockEvent]}
+          patchEvent={patchEventMock}
+          selectedEvent={mockEvent}
+          setSelectedEvent={setSelectedEvent}
+        />
+      </CalendarContext.Provider>
     );
 
     const eventLabel = screen.getByText('Mock event');
