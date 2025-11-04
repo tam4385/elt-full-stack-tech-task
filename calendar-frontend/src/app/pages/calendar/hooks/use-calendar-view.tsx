@@ -5,10 +5,10 @@ const getCustomCalendarEventComponent =
   ({ showIds }: { showIds: boolean }) =>
   ({ event }: { event: EltEvent }) => {
     return (
-      <span>
-        <strong>{event.title}</strong>
+      <div>
+        <h4 style={{ margin: '2px', fontWeight: '500' }}>{event.title}</h4>
         {showIds && <div>id: {event.id}</div>}
-      </span>
+      </div>
     );
   };
 

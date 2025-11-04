@@ -1,8 +1,18 @@
 @use "sass:color";
 @use 'react-big-calendar/lib/sass/styles' with (
-  $event-bg: #6d1b98,
-  $event-border: #4e136d,
+  $event-bg: #6A9AB0,
+  $event-border: 4px solid black,
   $event-outline: color.adjust(#6d1b98, $lightness: 10%),
-  $today-highlight-bg: #f8f4ff
+  $today-highlight-bg: #f8f4ff,
 );
 @use 'react-big-calendar/lib/addons/dragAndDrop/styles' as dnd-styles;
+
+.rbc-event-content {
+  text-align: center;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-weight: 400;
+}
+
+.rbc-event {
+  border-left: 7px solid #3A6D8C;
+}

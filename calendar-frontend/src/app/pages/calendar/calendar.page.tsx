@@ -17,7 +17,7 @@ export const CalendarPage = () => {
   } = useCalendar();
 
   return (
-    <CalendarProvider>
+    <CalendarProvider /* Currently passes showIds and setShowIds to the provider */>
       <CalendarToolbar
         selectedEvent={selectedEvent}
         setSelectedEvent={setSelectedEvent}
