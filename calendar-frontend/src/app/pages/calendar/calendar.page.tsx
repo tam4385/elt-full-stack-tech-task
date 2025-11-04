@@ -2,6 +2,7 @@ import { CalendarView } from './components/calendar-view/calendar-view';
 import { CalendarToolbar } from './components/calendar-toolbar/calendar-toolbar';
 import { EventModal } from './components/calendar-event-modal/calendar-event-modal';
 import { useCalendar } from './hooks/use-calendar';
+import { CalendarProvider } from './calendar.context';
 
 export const CalendarPage = () => {
   const {
@@ -9,19 +10,15 @@ export const CalendarPage = () => {
     addEvent,
     patchEvent,
     onNavigate,
-    showIds,
     selectedEvent,
-    setShowIds,
     setSelectedEvent,
     eventModalOpen,
     setEventModalOpen,
   } = useCalendar();
 
   return (
-    <div>
+    <CalendarProvider>
       <CalendarToolbar
-        showIds={showIds}
-        setShowIds={setShowIds}
         selectedEvent={selectedEvent}
         setSelectedEvent={setSelectedEvent}
         setEventModalOpen={setEventModalOpen}
@@ -30,7 +27,6 @@ export const CalendarPage = () => {
         onNavigate={onNavigate}
         events={events}
         patchEvent={patchEvent}
-        showIds={showIds}
         selectedEvent={selectedEvent}
         setSelectedEvent={setSelectedEvent}
       />
@@ -41,6 +37,6 @@ export const CalendarPage = () => {
         patchEvent={patchEvent}
         onOpenChange={setEventModalOpen}
       />
-    </div>
+    </CalendarProvider>
   );
 };

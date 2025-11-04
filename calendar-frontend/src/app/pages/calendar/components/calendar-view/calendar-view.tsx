@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { Calendar, momentLocalizer, View } from 'react-big-calendar';
 import withDragAndDrop, {
   EventInteractionArgs,
@@ -7,6 +8,7 @@ import './styles/calendar.scss';
 import { EltEvent } from '../../../../common/types';
 import { CalendarFormats } from './formats';
 import { useCalendarView } from '../../hooks/use-calendar-view';
+import { CalendarContext } from '../../calendar.context'
 
 moment.locale('en-gb');
 moment.updateLocale('en-gb', {
@@ -22,7 +24,6 @@ interface ICalendarViewProps {
   onNavigate: (date: Date, view: View) => void;
   events: EltEvent[];
   patchEvent: (event: EventInteractionArgs<EltEvent>) => void;
-  showIds: boolean;
   selectedEvent?: EltEvent;
   setSelectedEvent: (event: EltEvent | undefined) => void;
 }
@@ -31,10 +32,10 @@ export const CalendarView = ({
   onNavigate,
   events,
   patchEvent,
-  showIds,
   selectedEvent,
   setSelectedEvent,
 }: ICalendarViewProps) => {
+  const { showIds } = useContext(CalendarContext);
   const { components } = useCalendarView(showIds);
 
   const onEventDrop = (data: EventInteractionArgs<EltEvent>): void => patchEvent(data);

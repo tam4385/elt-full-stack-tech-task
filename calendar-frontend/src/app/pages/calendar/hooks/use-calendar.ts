@@ -8,7 +8,6 @@ import { EventInteractionArgs } from 'react-big-calendar/lib/addons/dragAndDrop'
 export const useCalendar = () => {
   const calendarService = new CalendarService();
   const [events, setEvents] = useState<EltEvent[]>([]);
-  const [showIds, setShowIds] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EltEvent | undefined>();
   const [eventModalOpen, setEventModalOpen] = useState<boolean>(false);
 
@@ -108,8 +107,6 @@ export const useCalendar = () => {
   return {
     events,
     patchEvent,
-    showIds,
-    setShowIds,
     onNavigate,
     addEvent,
     selectedEvent,
