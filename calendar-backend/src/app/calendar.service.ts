@@ -18,8 +18,11 @@ export class CalendarService {
   }
 
   async addEvent(payload: EventDto) {
-    const conflictingEvents = await this.checkForConflictingEvents(payload.start, payload.end);
-    
+    const conflictingEvents = await this.checkForConflictingEvents(
+      payload.start,
+      payload.end,
+    );
+
     if (conflictingEvents.length > 0) {
       throw new BadRequestException('Conflicting events found');
     }
@@ -33,10 +36,18 @@ export class CalendarService {
     return newEntity.id;
   }
 
+  // used for DND date patch and edit event
   async patchEvent(id: number, payload: EventDto) {
-    const conflictingEvents = await this.checkForConflictingEvents(payload.start, payload.end)
-    const filteredConflictingEvents = conflictingEvents.filter(event => event.id !== id);
-    
+    const conflictingEvents = await this.checkForConflictingEvents(
+      payload.start,
+      payload.end,
+    );
+
+    // if event name -> its editing the same event, so will always have conflict
+    const filteredConflictingEvents = conflictingEvents.filter(
+      (event) => event.id !== id,
+    );
+
     if (filteredConflictingEvents.length > 0) {
       throw new BadRequestException('Conflicting events found');
     }

@@ -47,15 +47,15 @@ export const useCalendar = () => {
     setEvents((events) => [...events, { ...event, id }]);
   };
 
-  const patchEventDatesOnly = async (data: EventInteractionArgs<EltEvent>): Promise<void> => {
+  const patchEventDatesOnly = async (
+    data: EventInteractionArgs<EltEvent>,
+  ): Promise<void> => {
     const { start, end } = data;
     const { id } = data.event as EltEvent;
     const prevState = events;
 
-    setEvents(curr =>
-      curr.map(ev =>
-        Number(ev.id) === id ? { ...ev, start, end } : ev
-      )
+    setEvents((curr) =>
+      curr.map((ev) => (Number(ev.id) === id ? { ...ev, start, end } : ev)),
     );
 
     try {
@@ -69,10 +69,10 @@ export const useCalendar = () => {
   const patchEventWithName = async (data: EltEvent): Promise<void> => {
     const { id, start, end, title } = data;
     const prevState = events;
-    setEvents(curr =>
-      curr.map(ev =>
-        Number(ev.id) === id ? { ...ev, start, end, title } : ev
-      )
+    setEvents((curr) =>
+      curr.map((ev) =>
+        Number(ev.id) === id ? { ...ev, start, end, title } : ev,
+      ),
     );
 
     try {
@@ -83,7 +83,9 @@ export const useCalendar = () => {
     }
   };
 
-  const patchEvent = async (data: EltEvent | EventInteractionArgs<EltEvent>): Promise<void> => {
+  const patchEvent = async (
+    data: EltEvent | EventInteractionArgs<EltEvent>,
+  ): Promise<void> => {
     if ('title' in data && 'id' in data) {
       return patchEventWithName(data as EltEvent);
     } else {

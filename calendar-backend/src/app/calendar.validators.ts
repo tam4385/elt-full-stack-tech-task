@@ -5,7 +5,7 @@ import {
 } from 'class-validator';
 
 export function IsStartBeforeEnd(validationOptions?: ValidationOptions) {
-  return function (object: Object, propertyName: string) {
+  return function (object: object, propertyName: string) {
     registerDecorator({
       name: 'isStartBeforeEnd',
       target: object.constructor,
@@ -18,10 +18,10 @@ export function IsStartBeforeEnd(validationOptions?: ValidationOptions) {
             return true;
           }
           const start = new Date(obj.start).getTime();
-          const end   = new Date(obj.end).getTime();
+          const end = new Date(obj.end).getTime();
           return start < end;
         },
-        defaultMessage(args: ValidationArguments) {
+        defaultMessage(_: ValidationArguments) {
           return 'start must be earlier than end';
         },
       },

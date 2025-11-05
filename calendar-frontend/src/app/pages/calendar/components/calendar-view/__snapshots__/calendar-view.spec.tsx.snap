@@ -1890,11 +1890,11 @@ exports[`CalendarView should render a calendar with an event 1`] = `
                     class="rbc-event-content"
                   >
                     <div>
-                      <h4
+                      <h5
                         style="margin: 2px; font-weight: 500;"
                       >
                         Mock event
-                      </h4>
+                      </h5>
                     </div>
                   </div>
                   <div

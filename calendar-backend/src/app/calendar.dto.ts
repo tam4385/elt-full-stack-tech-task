@@ -1,4 +1,10 @@
-import { IsDateString, IsOptional, IsString, MaxLength, MinLength, Validate } from 'class-validator';
+import {
+  IsDateString,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { IsStartBeforeEnd } from './calendar.validators';
 
 /**
@@ -11,10 +17,16 @@ import { IsStartBeforeEnd } from './calendar.validators';
  * }
  */
 export class EventDto {
-  @IsDateString({ strict: true }, { message: 'start must be a valid ISO 8601 date-string' })
+  @IsDateString(
+    { strict: true },
+    { message: 'start must be a valid ISO 8601 date-string' },
+  )
   start: string;
 
-  @IsDateString({ strict: true }, { message: 'end must be a valid ISO 8601 date-string' })
+  @IsDateString(
+    { strict: true },
+    { message: 'end must be a valid ISO 8601 date-string' },
+  )
   @IsStartBeforeEnd({ message: 'end date must be after start date' })
   end: string;
 

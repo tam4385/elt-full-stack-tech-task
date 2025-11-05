@@ -17,7 +17,8 @@ export const CalendarPage = () => {
   } = useCalendar();
 
   return (
-    <CalendarProvider /* Currently passes showIds and setShowIds to the provider */>
+    <CalendarProvider /* Currently passes showIds and setShowIds to the provider */
+    >
       <CalendarToolbar
         selectedEvent={selectedEvent}
         setSelectedEvent={setSelectedEvent}
@@ -33,7 +34,7 @@ export const CalendarPage = () => {
       <EventModal
         open={eventModalOpen}
         event={selectedEvent}
-        onSave={addEvent}
+        onAdd={addEvent}
         patchEvent={patchEvent}
         onOpenChange={setEventModalOpen}
       />

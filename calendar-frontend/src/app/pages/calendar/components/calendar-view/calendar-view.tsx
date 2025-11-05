@@ -8,7 +8,7 @@ import './styles/calendar.scss';
 import { EltEvent } from '../../../../common/types';
 import { CalendarFormats } from './formats';
 import { useCalendarView } from '../../hooks/use-calendar-view';
-import { CalendarContext } from '../../calendar.context'
+import { CalendarContext } from '../../calendar.context';
 
 moment.locale('en-gb');
 moment.updateLocale('en-gb', {
@@ -38,8 +38,10 @@ export const CalendarView = ({
   const { showIds } = useContext(CalendarContext);
   const { components } = useCalendarView(showIds);
 
-  const onEventDrop = (data: EventInteractionArgs<EltEvent>): void => patchEvent(data);
-  const onEventResize = (data: EventInteractionArgs<EltEvent>): void => patchEvent(data);
+  const onEventDrop = (data: EventInteractionArgs<EltEvent>): void =>
+    patchEvent(data);
+  const onEventResize = (data: EventInteractionArgs<EltEvent>): void =>
+    patchEvent(data);
 
   return (
     <DnDCalendar

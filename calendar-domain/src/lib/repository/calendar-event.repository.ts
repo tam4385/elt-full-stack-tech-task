@@ -37,9 +37,6 @@ export class CalendarEventRepository extends EntityRepository<CalendarEventEntit
   }
 
   async patchEvent(id: number, payload: PatchDates) {
-    if (!payload.start || !payload.end)
-      throw new BadRequestException('Start or end date not supplied');
-
     const entity = await this.findOne({ id });
 
     if (!entity) throw new NotFoundException('Event not found');

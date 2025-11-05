@@ -26,6 +26,7 @@ export const CalendarToolbar = ({
       <button
         data-testid="add-event-btn"
         onClick={() => setEventModalOpen(true)}
+        disabled={!!selectedEvent}
       >
         Add event
       </button>

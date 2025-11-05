@@ -6,7 +6,7 @@ const getCustomCalendarEventComponent =
   ({ event }: { event: EltEvent }) => {
     return (
       <div>
-        <h4 style={{ margin: '2px', fontWeight: '500' }}>{event.title}</h4>
+        <h5 style={{ margin: '2px', fontWeight: '500' }}>{event.title}</h5>
         {showIds && <div>id: {event.id}</div>}
       </div>
     );

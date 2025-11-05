@@ -2,22 +2,31 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { useState, useEffect } from 'react';
 import { EltEvent } from '../../../../common/types';
-import { overlay, content, heading, desc, label, input, row, btn, primary, closeX } from './styles/calendar-modal-style';
+import {
+  overlay,
+  content,
+  heading,
+  desc,
+  label,
+  input,
+  row,
+  btn,
+  primary,
+  closeX,
+} from './styles/calendar-modal-style';
 import { toLocalInput } from '../../calendar.utils';
 
 export function EventModal({
   open,
   onOpenChange,
   event,
-  onSave,
+  onAdd,
   patchEvent,
 }: {
   open: boolean;
   event: EltEvent | undefined;
-  onSave: (event: Omit<EltEvent, 'id'>) => Promise<void>;
-  patchEvent: (
-    event: EltEvent,
-  ) => Promise<void>;
+  onAdd: (event: Omit<EltEvent, 'id'>) => Promise<void>;
+  patchEvent: (event: EltEvent) => Promise<void>;
   onOpenChange: (state: boolean) => void;
 }) {
   const [title, setTitle] = useState('');
@@ -95,7 +104,7 @@ export function EventModal({
                 if (event?.id) {
                   patchEvent({ id: event.id, start, end, title: title.trim() });
                 } else {
-                  onSave({ title: title.trim(), start, end });
+                  onAdd({ title: title.trim(), start, end });
                 }
 
                 resetForm();
